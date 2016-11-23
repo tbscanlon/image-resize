@@ -1,6 +1,6 @@
 import os, sys
 from PIL import Image
-from glob import glob
+from glob import glob # allows wildcard args in Windows
 
 basewidth = 200 # set the size of the output image
 
@@ -27,9 +27,14 @@ for infile in glob(sys.argv[1]):
 			im = im.resize((basewidth, hsize), Image.ANTIALIAS)
 			im.save(outfile, "JPEG")
 
-			print "Successfully resized '%s'!" % infile
-			print "The resized image can be found at '%s'" % outfile
-			os.remove(infile)
+			print "Successfully resized %s" % infile
+			print "The resized image can be found at %s" % outfile
+
+			try:
+				os.remove(infile)
+
+			except WindowsError: # stop script halting if permission is denied
+				print "Don't have permission to delete ''%s'" % infile
 
 		except IOError:
 			print "cannot create thumbnail for '%s' - is it a valid filename?" % infile
